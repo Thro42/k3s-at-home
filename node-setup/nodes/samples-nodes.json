@@ -1,0 +1,19 @@
+{
+    "all": {
+        "firstuser": "idefix",
+        "passwd":"HASHD-ASSWORD",
+        "ssh_rsa":"",
+        "gateway": "192.168.0.1",
+        "nameservers":["192.168.0.1","192.168.0.2"],
+        "access_point": "WLAN-SSID",
+        "access_passwd_clear":"WLAN-PASSWORD",
+        "access_passwd":"HASHD-WLANPASSWORD",
+        "domain": "sample.net"
+    },
+   "clusternode": {
+        "ip":"192.168.42.xxx",
+        "network":"eth", 
+        "os": "buster",
+        "typ": "rpi4"
+    }
+}
