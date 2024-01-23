@@ -1,7 +1,7 @@
 version: 2
 ethernets:
   eth0:
-    dhcp4: true
+    dhcp4: false
     addresses:
       - [ip_address]
     gateway4: [gateway]

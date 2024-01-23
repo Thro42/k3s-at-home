@@ -1,0 +1,35 @@
+{
+  "settings": {
+    "firstuser": "idefix",
+    "passwd": "HASHD-PASSWORD",
+    "ssh_rsa": "",
+    "ip_mask": "24",
+    "gateway": "192.168.0.1",
+    "nameservers": [
+      "192.168.0.1",
+      "192.168.0.2"
+    ],
+    "access_point": "WLAN-SSID",
+    "access_passwd_clear": "WLAN-PASSWORD",
+    "access_passwd": "HASHD-WLANPASSWORD",
+    "domain": "sample.net"
+  },
+  "nodes": [
+    {
+      "name": "ubuntu-master",
+      "ip": "192.168.0.10",
+      "network": "eth",
+      "os": "ubuntu",
+      "typ": "rpi4",
+      "rolle": "master"
+    },
+    {
+      "name": "ubutu-node",
+      "ip": "192.168.0.11",
+      "network": "eth",
+      "os": "ubuntu",
+      "typ": "rpi4",
+      "rolle": "node"
+    }
+  ]
+}

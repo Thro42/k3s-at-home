@@ -31,25 +31,17 @@ function getIPline {
     $ip_line = -join ($IPAdress , '/', $settings.all.ip_mask)
     return $ip_line
 }
-function ubuntuSD ( $NodeSettings,  ) {
-    $ip_line = ""
-    $outfile = getOutFile( $NodeSettings )
+function ubuntuSD ( $NodeSettings ) {
+    $ip_line = getIPline ( $NodeSettings )
+    $outfile = getOutFile( 'user-data' )
     $nameservers = [String]::Join(',',$settings.all.nameservers)
-    switch ($NodeSettings.network) {
-        'eth' {  
-            $FirstStart = Get-Content templates\ubuntu\user-data
-            $FirstStart.replace('[hostname]', $ComputerName).`
-                        replace('[passwd]', $settings.all.passwd).`
-                        replace('[passwd]', $settings.all.passwd).`
-                        replace('[ssh-rsa]', $settings.all.ssh_rsa).`
-                        replace('[username]',$settings.all.firstuser)`
-                        -join "`n" | Set-Content -NoNewline $outfile
-        }
-        'wifi' {  }
-        Default {}
-    }
-    $ipfile = -join ($outpath , 'network-config')
-    Write-Host 'Prepare' $ipfile 'for' $IPAdress 'on' $NodeSettings.networ
+    $FirstStart = Get-Content templates\ubuntu\user-data
+    $FirstStart.replace('[hostname]', $ComputerName).`
+                replace('[passwd]', $settings.all.passwd).`
+                replace('[ssh-rsa]', $settings.all.ssh_rsa).`
+                replace('[username]',$settings.all.firstuser)`
+                -join "`n" | Set-Content -NoNewline $outfile
+    $ipfile = getOutFile( 'network-config' )
     switch ($NodeSettings.network) {
         'eth' {  
             $interface = Get-Content templates\ubuntu\network-config.eth
@@ -71,57 +63,16 @@ function SetupSD {
         $ComputerName = $objCombobox.SelectedItem.Trim()
         if ($ComputerName -ne "") {
             $NodeSettings = $settings.${ComputerName}
-            $IPAdress = $NodeSettings.ip    
-            Write-Host "IP:$($IPAdress)"
-            $ip_line = -join ($IPAdress , '/16')
             if ($objCombobox2.SelectedItem) {
                 $DriveName = $objCombobox2.SelectedItem.Trim()
                 if ($DriveName -ne "") {
                     Write-Host "Drive:$($DriveName)"
-                    if (!($DriveName -match '\\$' )) {
-                        $outpath = -join ($DriveName , '\')
-                    }
-                    else {
-                        $outpath = $DriveName
-                    }
-                    Write-Host "Output:$($outpath)"
-                    $outfile = -join ($outpath , 'user-data')
-                    Write-Host 'Prepare' $outfile 'for' $ComputerName
                     switch ($NodeSettings.os) {
                         'ubuntu' {
-
-                            $nameservers = [String]::Join(',',$settings.all.nameservers)
-                            switch ($NodeSettings.network) {
-                                'eth' {  
-                                    $FirstStart = Get-Content templates\ubuntu\user-data
-                                    $FirstStart.replace('[hostname]', $ComputerName).`
-                                                replace('[passwd]', $settings.all.passwd).`
-                                                replace('[passwd]', $settings.all.passwd).`
-                                                replace('[ssh-rsa]', $settings.all.ssh_rsa).`
-                                                replace('[username]',$settings.all.firstuser)`
-                                                -join "`n" | Set-Content -NoNewline $outfile
-                                }
-                                'wifi' {  }
-                                Default {}
-                            }
-                            $ipfile = -join ($outpath , 'network-config')
-                            Write-Host 'Prepare' $ipfile 'for' $IPAdress 'on' $NodeSettings.networ
-                            switch ($NodeSettings.network) {
-                                'eth' {  
-                                    $interface = Get-Content templates\ubuntu\network-config.eth
-                                    $interface.replace('[ip_address]', $ip_line).`
-                                               replace('[gateway]',$settings.all.gateway).`
-                                               replace('[nameservers]',$nameservers).`
-                                               replace('[local-domain]',$settings.all.domain)`
-                                               -join "`n" | Set-Content -NoNewline $ipfile
-
-                                }
-                                Default {}
-                            }
+                            ubuntuSD $NodeSettings
                         }
                         Default {
-                            $nameservers = [String]::Join(' ',$settings.all.nameservers)
-
+                            Write-Host "Operatingsystem $($NodeSettings.os) not supportetd"
                         }
                     }
                 }
