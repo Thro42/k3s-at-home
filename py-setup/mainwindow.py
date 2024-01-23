@@ -1,10 +1,11 @@
 from PySide6.QtCore import QSize
 from PySide6.QtGui import QAction,QIcon
-from PySide6.QtWidgets import QMainWindow,QToolBar,QPushButton,QStatusBar
+from PySide6.QtWidgets import QMainWindow,QToolBar,QPushButton,QStatusBar,QMessageBox
 from nodetree import NodeTree
 from nodeedit import NodeEditDlg
 from prebootout import PreBootOut
 from settings import SettingDlg
+from inventory import Inventory
 
 class MainWindow(QMainWindow):
     def __init__(self, app):
@@ -22,6 +23,9 @@ class MainWindow(QMainWindow):
 
         save_action = file_menu.addAction("Settings")
         save_action.triggered.connect(self.edit_setting)
+
+        save_action = file_menu.addAction("Generate Inventory")
+        save_action.triggered.connect(self.save_inventory)
 
         file_menu.addSeparator()
         save_action = file_menu.addAction("Save")
@@ -54,7 +58,7 @@ class MainWindow(QMainWindow):
 
     def add_node(self):
         model = self.nodeTree.getTreeModel()
-        dlg =  NodeEditDlg(model, "Add Node")
+        dlg =  NodeEditDlg(self, model, "Add Node")
         dlg.exec()
         self.nodeTree.reloadTree()
 
@@ -64,10 +68,17 @@ class MainWindow(QMainWindow):
 
     def preboot_out(self):
         model = self.nodeTree.getTreeModel()
-        dlg = PreBootOut(model)
+        dlg = PreBootOut(self,model)
         dlg.exec()
 
     def edit_setting(self):
         model = self.nodeTree.getTreeModel()
-        dlg = SettingDlg(model)
+        dlg = SettingDlg(self, model)
         dlg.exec()
+
+    def save_inventory(self):
+        model = self.nodeTree.getTreeModel()
+        nodeArr = model.getNodeArry()
+        inventory = Inventory()
+        inventory.generate(nodeArr)
+        QMessageBox.information(self, 'Save Inventory', 'Inventory generated')

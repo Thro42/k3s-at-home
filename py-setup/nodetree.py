@@ -46,7 +46,7 @@ class NodeTree (QTreeWidget) :
 
     def onClickItem(self,item):
         model = self.nodeModel
-        dlg =  NodeEditDlg(self.nodeModel, "Edit Node")
+        dlg =  NodeEditDlg(self,self.nodeModel, "Edit Node")
         for node in self.nodeArr:
             if node['name'] == item.text(0):
                 dlg.fillNode(node)

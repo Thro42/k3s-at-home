@@ -11,8 +11,8 @@ from PySide6.QtWidgets import (QAbstractButton, QComboBox,
 from PySide6.QtWidgets import QApplication, QDialog, QMainWindow, QPushButton
 
 class NodeEditDlg(QDialog):
-    def __init__(self, model, title):
-        super().__init__()
+    def __init__(self, parent, model, title):
+        super().__init__(parent)
         self.title = title
         self.model = model
         self.setWindowIcon(QIcon('images\pi_setup.png'))

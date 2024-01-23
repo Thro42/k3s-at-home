@@ -12,8 +12,8 @@ from nodemodel import NodeModel
 from config import *
 
 class SettingDlg(QDialog):
-    def __init__(self, model):
-        super().__init__()
+    def __init__(self, parent, model):
+        super().__init__(parent)
         self.model = model
         self.resize(400, 330)
         self.buttonBox = QDialogButtonBox(self)

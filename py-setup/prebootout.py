@@ -8,8 +8,8 @@ from PySide6.QtWidgets import (QAbstractButton, QApplication, QComboBox, QDialog
 from config import *
 
 class PreBootOut(QDialog):
-    def __init__(self, model):
-        super().__init__()
+    def __init__(self, parent, model):
+        super().__init__(parent)
         self.model = model
         self.resize(292, 153)
         self.buttonBox = QDialogButtonBox(self)
