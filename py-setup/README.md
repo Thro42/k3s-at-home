@@ -8,7 +8,7 @@ After installing Python 3.xx on your system go to this directory and start this 
 pip install -r requirements.txt
 ```
 
-Then start the programm with 
+Then start the programm with
 
 ```bash
 python main.py

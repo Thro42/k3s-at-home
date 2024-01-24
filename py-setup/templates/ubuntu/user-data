@@ -25,6 +25,3 @@ runcmd:
 - localectl set-x11-keymap "de" pc105
 - setupcon -k --force || true
 
-autologin:
-  enable: true
-  user: [username]
