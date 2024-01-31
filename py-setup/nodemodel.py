@@ -46,3 +46,10 @@ class NodeModel:
 
     def getSettings(self):
          return self.model['settings']
+    
+    def getNodeByName(self, name):
+        for node in self.model['nodes']:
+            if node['name'] == name:
+                 return node
+     
+     

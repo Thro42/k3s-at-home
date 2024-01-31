@@ -55,7 +55,7 @@ class NodeEditDlg(QDialog):
 
         self.osCB = QComboBox(self.formLayoutWidget)
         self.osCB.addItem("ubuntu","ubuntu")
-        self.osCB.addItem("buster","buster")
+        self.osCB.addItem("bullseye","bullseye")
         self.osCB.addItem("bookworm","bookworm")
         self.formLayout.setWidget(3, QFormLayout.FieldRole, self.osCB)
 
@@ -88,17 +88,23 @@ class NodeEditDlg(QDialog):
         self.buttonBox.rejected.connect(self.reject)
         self.buttonBox.accepted.connect(self.buttonBox.close)
        
+        self.oldName = ''
+    
     def addNewNode(self):
         newName = self.nameEdit.text()
         newNodeJson = {"name": self.nameEdit.text(), "ip": self.ipEdit.text(),"network": str(self.networkCB.currentText()),"os": str(self.osCB.currentText()),"typ": str(self.typeCB.currentText()),"rolle": str(self.roleCB.currentText())}
-        nodeArr = self.model.getNodeArry()
-        for node in nodeArr:
-            if node['name'] == newName:
-                self.model.removeNode(node)
+        node = self.model.getNodeByName(self.oldName)
+        if node:
+            self.model.removeNode(node)
+#        nodeArr = self.model.getNodeArry()
+#        for node in nodeArr:
+#            if node['name'] == newName:
+#                self.model.removeNode(node)
         self.model.addNode(newNodeJson)
         self.accept()
 
     def fillNode(self, node):
+        self.oldName = node['name']
         self.nameEdit.setText(node['name'])
         self.ipEdit.setText(node['ip'])
         self.networkCB.setCurrentText(node['network'])

@@ -351,3 +351,4 @@ MigrationBackup/
 node-setup/nodes/nodes.json
 inventory/hosts.ini
 py-setup/nodes/nodes.json
+py-setup/passtest.py

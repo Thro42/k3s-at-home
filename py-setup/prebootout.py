@@ -3,9 +3,10 @@ from ctypes import windll
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect, QSize, QTime, QUrl, Qt)
 from PySide6.QtWidgets import (QAbstractButton, QApplication, QComboBox, QDialog,QCheckBox,
-    QDialogButtonBox, QFormLayout, QLabel, QSizePolicy,
+    QDialogButtonBox, QFormLayout, QLabel, QSizePolicy,QMessageBox,
     QWidget)
 from ubuntu import UbuntuSettings
+from raspbian import RaspbianSettings
 from config import *
 
 class PreBootOut(QDialog):
@@ -85,26 +86,54 @@ class PreBootOut(QDialog):
                  self.prepBootFiles(theDrive, node)
         self.accept()
 
+    def selectNode(self, node):
+        self.comboBox.setCurrentText(node['name'])
+        
     def prepBootFiles(self, drive, node):
         print("Drive: ", drive)
         print("Node: ", node['name'])
         print(" OS: ", node['os'])
         if node['os'] == "ubuntu":
             self.prepareUbuntu(drive, node)
-        elif node['os'] == "buster":
+        elif node['os'] == "bullseye":
             print("Perpare firstrun.sh")
+            self.prepareRaspbian(drive, node)
         elif node['os'] == "bookworm":
             print("Perpare interfaces")
+            self.prepareRaspbian(drive, node)
 
 
     def prepareUbuntu(self, drive, node):
         print("Perpare ubuntu")
         settings = self.model.getSettings()
         ubuntu = UbuntuSettings(settings,drive,node)
-        if self.cbUser.isChecked() == True:
-            print("Perpare user-data")
-            ubuntu.save_user_data()
-        if self.cbNetwork.isChecked() == True:
-            print("Perpare network-config")
-            ubuntu.save_net_config()
-            print("set IP to:", node['ip'])
+        if ubuntu.check_sd_os() != True:
+            QMessageBox.critical(self, 'Wrong SD-Card', 'SD-Card is not for ' + node['os'])
+        else:
+            if self.cbUser.isChecked() == True:
+                print("Perpare user-data")
+                ubuntu.save_user_data()
+            if self.cbNetwork.isChecked() == True:
+                print("Perpare network-config")
+                ubuntu.save_net_config()
+                print("set IP to:", node['ip'])
+            QMessageBox.information(self, 'SD-Card pepard', 'SD-Card pepard for '+ node['os'])
+
+    def prepareRaspbian(self, drive, node):
+        print("Perpare Raspbian")
+        settings = self.model.getSettings()
+        raspbian = RaspbianSettings(self, settings,drive,node)
+        if raspbian.check_sd_os() != True:
+            QMessageBox.critical(self, 'Wrong SD-Card', 'SD-Card is not for ' + node['os'])
+        else:
+            if self.cbUser.isChecked() == True:
+                raspbian.save_firstrun()
+            if self.cbNetwork.isChecked() == True:
+                if node['os'] == "bookworm":
+                    raspbian.save_interface()
+                elif node['os'] == "bullseye":
+                    raspbian.save_dhcpcd_conf()
+                else:
+                    QMessageBox.critical(self, 'Wrong OS', 'OS ' + node['os'] + ' is not supported')
+                
+            QMessageBox.information(self, 'SD-Card pepard', 'SD-Card pepard for '+ node['os'])
